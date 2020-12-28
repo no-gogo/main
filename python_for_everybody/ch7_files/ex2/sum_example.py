@@ -13,6 +13,9 @@ import threading
 #Debug options. 1 = on, 0 = off
 debug = 0
 
+if debug:
+	print("Debug view is on")
+
 
 def signal_handler(signal, frame):
     print('You pressed Ctrl+C!')
@@ -38,20 +41,54 @@ def main():
 	# Count how many lines we find with the beginning we are looking to match
 	count=0
 
+	# Create a list of values from the file
+	values = []
+
+	# Variable for total of all of the values
+	total = 0.0
+
+	# Variable for the average of all of the values
+	average = 0
+
 	# Go through each line and look for match
 	for line in fh:
 	    if not line.startswith("X-DSPAM-Confidence:") : continue
 	    if debug:
 		    print(line) # print the line that was found
 	    count=count+1 # if there is a match, add to count
+	    x = line.split()
+	    values.append(float(x[1]))
 
+	    if debug:
+	    	print("Printing what is appended to value")
+	    	print("Value = "+str(x[1]))
 
 
 
 # Explain program next steps
 	print("Found "+ str(count) + " lines that started with X-DSPAM-Confidence")
 
-	print("Calculating the average value of this line....")
+
+	# Make sure that we found at least one value.
+	if len(values) > 0:
+		print("Calculating the average value of this line....")
+
+		# Calculate the total of all values.
+		for x in values:
+			total = total + float(x)
+			if debug:
+				print("Printing what is added to total")
+				print(x)
+
+		# Calculate the average of the values
+		average = total/len(values)
+		
+		print("Average value for 'X-DSPAM-Confidence' was: "+str(average))
+		exit()
+
+	else:
+		print("No values found in that file")
+		exit()
 
 if __name__ == "__main__":
 
